@@ -1,0 +1,252 @@
+/* ─── Nova Accessories — RTL Overrides ──────────────────────────────────────
+   Applied when <html dir="rtl"> (Arabic mode)
+   Uses Cairo for crisp Arabic typography.
+─────────────────────────────────────────────────────────────────────────────*/
+
+/* ── Font ───────────────────────────────────────────────────────────────── */
+[dir="rtl"] body,
+[dir="rtl"] input,
+[dir="rtl"] button,
+[dir="rtl"] select,
+[dir="rtl"] textarea {
+  font-family: 'Cairo', 'Inter', sans-serif;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+/* Cart count moves to top-left corner of button */
+[dir="rtl"] .cart-count {
+  right: auto;
+  left: -4px;
+}
+
+/* Nav active dot — stays centred, just fix transform */
+[dir="rtl"] .nav-link.active::after {
+  left: auto;
+  right: 50%;
+  transform: translateX(50%);
+}
+
+/* Language switch: reverse internal order visually */
+[dir="rtl"] .lang-switch {
+  flex-direction: row-reverse;
+}
+
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+[dir="rtl"] .hero-eyebrow::before { content: '✦'; }   /* already fine */
+
+/* Floating dots — mirror horizontally */
+[dir="rtl"] .hero-dot-1 { left: auto; right: -5%;  }
+[dir="rtl"] .hero-dot-2 { left: auto; right: -8%;  }
+[dir="rtl"] .hero-dot-3 { right: auto; left: -4%;  }
+
+/* Hero badge "Bestseller" moves to top-left */
+[dir="rtl"] .hero-badge-float { right: auto; left: 24px; }
+
+/* Hero stats — centre them properly */
+[dir="rtl"] .hero-stats { flex-direction: row-reverse; justify-content: flex-end; }
+
+/* ── Product Cards ───────────────────────────────────────────────────────── */
+/* Badge: was top-left, stays visually start-side (RTL = top-right physical → top-start) */
+[dir="rtl"] .product-badge { left: auto; right: 14px; }
+
+/* Hover actions: was top-right, now top-left */
+[dir="rtl"] .product-actions {
+  right: auto;
+  left: 14px;
+  transform: translateX(-8px);
+}
+[dir="rtl"] .product-card:hover .product-actions {
+  transform: translateX(0);
+}
+
+/* Price + button row already flips with flex row-reverse via RTL */
+[dir="rtl"] .product-footer { flex-direction: row-reverse; }
+[dir="rtl"] .product-price  { flex-direction: row-reverse; }
+
+/* ── Filter Bar ─────────────────────────────────────────────────────────── */
+[dir="rtl"] .filter-bar   { flex-direction: row-reverse; }
+[dir="rtl"] .subcat-bar   { flex-direction: row-reverse; }
+
+/* ── Section Headers ────────────────────────────────────────────────────── */
+[dir="rtl"] .section-header { text-align: center; } /* keep centered */
+
+/* ── Category Cards ─────────────────────────────────────────────────────── */
+[dir="rtl"] .cat-card { text-align: center; } /* keep centered */
+
+/* ── Featured Banner ────────────────────────────────────────────────────── */
+[dir="rtl"] .featured-banner-content { text-align: right; }
+
+/* ── Cart Drawer ────────────────────────────────────────────────────────── */
+/* Drawer slides in from left (instead of right) in RTL */
+[dir="rtl"] .cart-drawer {
+  right: auto;
+  left: 0;
+  border-right: 1px solid var(--border);
+  border-left: none;
+  box-shadow: 20px 0 60px rgba(0,0,0,0.5);
+  transform: translateX(-100%);
+}
+[dir="rtl"] .cart-drawer.open { transform: translateX(0); }
+
+[dir="rtl"] .cart-header      { flex-direction: row-reverse; }
+[dir="rtl"] .cart-item        { flex-direction: row-reverse; }
+[dir="rtl"] .cart-item-qty    { flex-direction: row-reverse; }
+[dir="rtl"] .cart-item-remove { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .cart-subtotal    { flex-direction: row-reverse; }
+[dir="rtl"] .cart-footer      { text-align: right; }
+
+/* ── Quick View Modal ───────────────────────────────────────────────────── */
+[dir="rtl"] .modal { direction: rtl; }
+[dir="rtl"] .modal-img {
+  border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+}
+[dir="rtl"] .modal-img img {
+  border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+}
+[dir="rtl"] .modal-close { right: auto; left: 16px; }
+[dir="rtl"] .modal-cat   { text-align: right; }
+[dir="rtl"] .modal-name  { text-align: right; }
+[dir="rtl"] .modal-desc  { text-align: right; }
+[dir="rtl"] .modal-price-row { flex-direction: row-reverse; justify-content: flex-end; }
+[dir="rtl"] .modal-actions   { flex-direction: row-reverse; }
+
+/* ── Hero Card Info ─────────────────────────────────────────────────────── */
+[dir="rtl"] .hero-card-info { flex-direction: row-reverse; text-align: right; }
+
+/* ── Testimonials ───────────────────────────────────────────────────────── */
+[dir="rtl"] .testimonial-text   { text-align: right; }
+[dir="rtl"] .testimonial-author { flex-direction: row-reverse; }
+[dir="rtl"] .testimonial-name   { text-align: right; }
+[dir="rtl"] .testimonial-role   { text-align: right; }
+
+/* ── Newsletter ─────────────────────────────────────────────────────────── */
+[dir="rtl"] .newsletter { direction: rtl; }
+[dir="rtl"] .newsletter-form { flex-direction: row-reverse; }
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+[dir="rtl"] .footer-grid     { direction: rtl; }
+[dir="rtl"] .footer-heading  { text-align: right; }
+[dir="rtl"] .footer-link     { text-align: right; }
+[dir="rtl"] .footer-brand-desc { text-align: right; }
+[dir="rtl"] .footer-socials  { flex-direction: row-reverse; }
+[dir="rtl"] .footer-bottom   { flex-direction: row-reverse; }
+[dir="rtl"] .footer-copy     { text-align: right; }
+
+/* ── Logo ───────────────────────────────────────────────────────────────── */
+[dir="rtl"] .logo       { flex-direction: row-reverse; }
+[dir="rtl"] .logo-sub   { letter-spacing: 1px; }  /* tighten spacing for Arabic */
+[dir="rtl"] .logo-name  { text-align: right; }
+
+/* ── Marquee ────────────────────────────────────────────────────────────── */
+/* Mirror marquee direction for RTL */
+[dir="rtl"] .marquee-track {
+  animation-direction: reverse;
+}
+[dir="rtl"] .marquee-item { flex-direction: row-reverse; }
+
+/* ── Toast Animations (RTL — slide from left) ───────────────────────────── */
+[dir="rtl"] .toast {
+  animation-name: toastIn-rtl;
+}
+[dir="rtl"] .toast.removing {
+  animation-name: toastOut-rtl;
+}
+@keyframes toastIn-rtl {
+  from { opacity: 0; transform: translateX(-24px) scale(0.95); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes toastOut-rtl {
+  to { opacity: 0; transform: translateX(-20px); }
+}
+
+/* Move toast to bottom-LEFT in RTL */
+[dir="rtl"] .toast-container {
+  right: auto;
+  left: 28px;
+}
+
+/* ── Product Rating Row ─────────────────────────────────────────────────── */
+[dir="rtl"] .product-rating { flex-direction: row-reverse; justify-content: flex-end; }
+[dir="rtl"] .product-cat    { text-align: right; }
+[dir="rtl"] .product-name   { text-align: right; }
+
+/* ── Hero Actions ───────────────────────────────────────────────────────── */
+[dir="rtl"] .hero-actions { flex-direction: row-reverse; justify-content: flex-start; }
+
+/* ── Search Bar ─────────────────────────────────────────────────────────── */
+[dir="rtl"] .search-bar { flex-direction: row-reverse; }
+
+/* ── Header Inner ───────────────────────────────────────────────────────── */
+[dir="rtl"] .header-inner  { flex-direction: row-reverse; }
+[dir="rtl"] .header-actions { margin-left: 0; margin-right: 16px; flex-direction: row-reverse; }
+
+/* ── Admin Sidebar (flip to right side) ─────────────────────────────────── */
+[dir="rtl"] body { flex-direction: row-reverse; }   /* sidebar moves to right */
+[dir="rtl"] .sidebar {
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+
+/* Admin topbar */
+[dir="rtl"] .admin-topbar    { flex-direction: row-reverse; }
+[dir="rtl"] .topbar-actions  { flex-direction: row-reverse; }
+
+/* Admin table */
+[dir="rtl"] .data-table th,
+[dir="rtl"] .data-table td   { text-align: right; }
+[dir="rtl"] .prod-info       { flex-direction: row-reverse; }
+
+/* Admin table-header */
+[dir="rtl"] .table-header    { flex-direction: row-reverse; }
+[dir="rtl"] .table-actions   { flex-direction: row-reverse; }
+
+/* Admin search */
+[dir="rtl"] .search-input        { flex-direction: row-reverse; }
+[dir="rtl"] .search-input input  { text-align: right; }
+
+/* Admin form */
+[dir="rtl"] .form-header         { flex-direction: row-reverse; }
+[dir="rtl"] .form-label          { text-align: right; }
+[dir="rtl"] .form-hint           { text-align: right; }
+[dir="rtl"] .form-input,
+[dir="rtl"] .form-select,
+[dir="rtl"] .form-textarea        { text-align: right; direction: rtl; }
+[dir="rtl"] .form-footer          { flex-direction: row-reverse; }
+[dir="rtl"] .toggle-wrap          { flex-direction: row-reverse; justify-content: flex-end; }
+
+/* Admin category manager */
+[dir="rtl"] .cat-panel-header     { flex-direction: row-reverse; }
+[dir="rtl"] .cat-item             { flex-direction: row-reverse; }
+[dir="rtl"] .cat-item-count       { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .cat-item-actions     { margin-right: 0; margin-left: 0; }
+[dir="rtl"] .subcat-item          { flex-direction: row-reverse; }
+[dir="rtl"] .subcat-item-actions  { margin-left: 0; margin-right: auto; }
+
+/* Admin stats */
+[dir="rtl"] .stat-card { text-align: right; }
+
+/* Confirm modal */
+[dir="rtl"] .confirm-modal { direction: rtl; }
+[dir="rtl"] .confirm-actions { flex-direction: row-reverse; }
+
+/* Admin toast */
+[dir="rtl"] .toast-container {
+  right: auto;
+  left: 24px;
+}
+
+/* ── Responsive RTL ─────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  [dir="rtl"] .modal-img {
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+  [dir="rtl"] .modal-img img {
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+  [dir="rtl"] .featured-banner-content { text-align: center; }
+  [dir="rtl"] .newsletter { direction: rtl; }
+}
+
+@media (max-width: 480px) {
+  [dir="rtl"] .toast-container { left: 16px; right: auto; }
+}

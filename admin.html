@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الإدارة — نوفا للإكسسوارات</title>
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/rtl.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+  <script src="js/i18n.js"></script>
+</head>
+<body>
+
+  <!-- ── Sidebar ──────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">💎</div>
+      <div>
+        <div class="logo-name">Nova <span data-i18n="adm.dashboard">لوحة التحكم</span></div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label" data-i18n="adm.main">الرئيسية</div>
+      <div class="sidebar-link" data-page="page-dashboard">
+        <span class="link-icon">📊</span>
+        <span data-i18n="adm.dashboard">لوحة التحكم</span>
+      </div>
+      <div class="sidebar-link" data-page="page-products">
+        <span class="link-icon">📦</span>
+        <span data-i18n="adm.products">المنتجات</span>
+        <span class="link-badge" id="productCountBadge">0</span>
+      </div>
+      <div class="sidebar-link" data-page="page-categories">
+        <span class="link-icon">🗂️</span>
+        <span data-i18n="adm.categories">الفئات</span>
+      </div>
+
+      <div class="nav-section-label" style="margin-top:16px;" data-i18n="adm.store">المتجر</div>
+      <a class="sidebar-link" href="index.html" target="_blank">
+        <span class="link-icon">🛍️</span>
+        <span data-i18n="adm.view.store">عرض المتجر</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html">
+        <span data-i18n="adm.back.store">→ العودة للمتجر</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ──────────────────────────────────────────────── -->
+  <main class="admin-main">
+
+    <!-- Topbar -->
+    <div class="admin-topbar">
+      <div>
+        <div class="topbar-title" id="topbarTitle" data-i18n="adm.dashboard">لوحة التحكم</div>
+        <div class="topbar-sub"   id="topbarSub"   data-i18n="adm.sub.dash">نظرة عامة على متجرك</div>
+      </div>
+      <div class="topbar-actions">
+        <!-- Language Switch -->
+        <div class="lang-switch" role="group" aria-label="Language selector">
+          <button class="lang-btn active" id="langAr" onclick="I18N.setLang('ar')">ع</button>
+          <button class="lang-btn"        id="langEn" onclick="I18N.setLang('en')">EN</button>
+        </div>
+        <a href="index.html" class="btn btn-outline btn-sm" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          <span data-i18n="adm.open.store">فتح المتجر</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- ── Dashboard Page ─────────────────────────────────────────── -->
+    <div class="admin-page" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-val" id="statProducts">0</div>
+          <div class="stat-label" data-i18n="adm.stat.products">إجمالي المنتجات</div>
+          <div class="stat-change" data-i18n="adm.stat.active">↑ نشط في المتجر</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🗂️</div>
+          <div class="stat-val" id="statCats">0</div>
+          <div class="stat-label" data-i18n="adm.stat.cats">الفئات</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📂</div>
+          <div class="stat-val" id="statSubcats">0</div>
+          <div class="stat-label" data-i18n="adm.stat.subcats">الفئات الفرعية</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-val" id="statFeatured">0</div>
+          <div class="stat-label" data-i18n="adm.stat.featured">المنتجات المميزة</div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title" data-i18n="adm.recent">أحدث المنتجات</div>
+          <button class="btn btn-primary btn-sm" onclick="document.querySelector('[data-page=page-products]').click()">
+            <span data-i18n="adm.view.all">عرض الكل</span>
+          </button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th data-i18n="adm.th.product">المنتج</th>
+              <th data-i18n="adm.th.price">السعر</th>
+              <th data-i18n="adm.th.badge">الشارة</th>
+              <th data-i18n="adm.th.stock">المخزون</th>
+            </tr>
+          </thead>
+          <tbody id="recentProducts"></tbody>
+        </table>
+      </div>
+
+      <!-- Quick Links -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:24px;">
+        <div class="stat-card" style="cursor:pointer" onclick="document.querySelector('[data-page=page-products]').click()">
+          <div style="font-size:24px;margin-bottom:10px">➕</div>
+          <div style="font-weight:700;font-size:15px" data-i18n="adm.quick.add">إضافة منتج</div>
+          <div class="stat-label" data-i18n="adm.quick.add.sub">أدرج منتجاً جديداً في المتجر</div>
+        </div>
+        <div class="stat-card" style="cursor:pointer" onclick="document.querySelector('[data-page=page-categories]').click()">
+          <div style="font-size:24px;margin-bottom:10px">🗂️</div>
+          <div style="font-weight:700;font-size:15px" data-i18n="adm.quick.cats">إدارة الفئات</div>
+          <div class="stat-label" data-i18n="adm.quick.cats.sub">إضافة أو تعديل الفئات</div>
+        </div>
+        <div class="stat-card" style="cursor:pointer" onclick="window.open('index.html','_blank')">
+          <div style="font-size:24px;margin-bottom:10px">🛍️</div>
+          <div style="font-weight:700;font-size:15px" data-i18n="adm.quick.store">عرض المتجر</div>
+          <div class="stat-label" data-i18n="adm.quick.store.sub">رؤية واجهة المتجر المباشرة</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Products Page ──────────────────────────────────────────── -->
+    <div class="admin-page" id="page-products">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title" data-i18n="adm.products">المنتجات</div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <div class="search-input">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+              <input type="search" id="productSearchInput"
+                data-i18n-placeholder="adm.search.prod"
+                placeholder="بحث عن منتج...">
+            </div>
+            <button class="btn btn-primary" id="addProductBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              <span data-i18n="adm.add.product">إضافة منتج</span>
+            </button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th data-i18n="adm.th.product">المنتج</th>
+                <th data-i18n="adm.th.price">السعر</th>
+                <th data-i18n="adm.th.category">الفئة</th>
+                <th data-i18n="adm.th.badge">الشارة</th>
+                <th data-i18n="adm.th.stock">المخزون</th>
+                <th data-i18n="adm.th.actions">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="productsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Categories Page ────────────────────────────────────────── -->
+    <div class="admin-page" id="page-categories">
+      <div class="cat-manager-grid">
+        <div class="cat-panel">
+          <div class="cat-panel-header">
+            <div class="cat-panel-title" data-i18n="adm.cats.title">🗂️ الفئات</div>
+            <button class="btn btn-primary btn-sm" id="addCatBtn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              <span data-i18n="adm.add.cat">إضافة</span>
+            </button>
+          </div>
+          <div class="cat-list" id="catList"></div>
+        </div>
+
+        <div class="cat-panel" id="subcatPanel">
+          <div class="cat-panel-header">
+            <div class="cat-panel-title" id="subcatPanelTitle" data-i18n="adm.subcats.title">الفئات الفرعية</div>
+            <button class="btn btn-primary btn-sm" id="addSubcatBtn" style="display:none">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              <span data-i18n="adm.add.cat">إضافة</span>
+            </button>
+          </div>
+          <div class="subcat-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Overlays ───────────────────────────────────────────────────── -->
+  <div class="form-overlay" id="productFormOverlay"></div>
+  <div class="form-overlay" id="catFormOverlay"></div>
+
+  <!-- ── Confirm Delete ─────────────────────────────────────────────── -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-modal">
+      <div class="confirm-icon">⚠️</div>
+      <div class="confirm-title"   id="confirmTitle"  data-i18n="adm.del.title">هل أنت متأكد؟</div>
+      <div class="confirm-message" id="confirmMessage"></div>
+      <div class="confirm-actions">
+        <button class="btn btn-outline" id="confirmNo"  data-i18n="adm.del.no">إلغاء</button>
+        <button class="btn btn-danger"  id="confirmYes" data-i18n="adm.del.yes">حذف</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toast ──────────────────────────────────────────────────────── -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- ── Scripts ───────────────────────────────────────────────────── -->
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

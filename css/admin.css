@@ -349,3 +349,152 @@ input, select, textarea { font-family: inherit; }
 }
 .lang-btn.active { background: var(--grad); color: white; }
 .lang-btn:not(.active):hover { color: var(--text); }
+
+/* ══════════════════════════════════════════════════════════════════
+   LOCK SCREEN
+══════════════════════════════════════════════════════════════════ */
+.lock-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.lock-screen.lock-exit { opacity: 0; transform: scale(1.04); pointer-events: none; }
+
+.lock-bg-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); opacity: 0.25; pointer-events: none;
+}
+.lock-orb1 {
+  width: 500px; height: 500px; top: -150px; right: -100px;
+  background: radial-gradient(circle, #8B5CF6, transparent 70%);
+  animation: orbFloat 8s ease-in-out infinite;
+}
+.lock-orb2 {
+  width: 400px; height: 400px; bottom: -120px; left: -80px;
+  background: radial-gradient(circle, #EC4899, transparent 70%);
+  animation: orbFloat 10s ease-in-out infinite reverse;
+}
+@keyframes orbFloat {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50%      { transform: translate(20px,-30px) scale(1.05); }
+}
+
+.lock-card {
+  position: relative; z-index: 1;
+  background: rgba(20,20,36,0.85);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 28px;
+  padding: 44px 40px 36px;
+  width: 100%; max-width: 420px;
+  backdrop-filter: blur(24px);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(139,92,246,0.15);
+  text-align: center;
+  animation: lockCardIn 0.5s cubic-bezier(0.34,1.3,0.64,1) both;
+}
+@keyframes lockCardIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.95); }
+  to   { opacity: 1; transform: none; }
+}
+
+.lock-logo {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; margin-bottom: 28px;
+}
+.lock-logo-mark {
+  width: 44px; height: 44px; border-radius: 14px;
+  background: var(--grad); display: flex; align-items: center;
+  justify-content: center; font-size: 20px;
+  box-shadow: 0 8px 24px rgba(139,92,246,0.45);
+}
+.lock-brand-name { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+
+.lock-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.lock-sub   { font-size: 14px; color: var(--text3); margin-bottom: 28px; }
+
+.lock-field-wrap {
+  position: relative; display: flex; align-items: center;
+  background: var(--bg3); border: 1.5px solid var(--border2);
+  border-radius: 12px; margin-bottom: 14px;
+  transition: border-color 0.2s;
+}
+.lock-field-wrap:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(139,92,246,0.14); }
+.lock-field-icon { margin-inline-start: 14px; color: var(--text3); flex-shrink: 0; }
+.lock-field {
+  flex: 1; background: none; border: none; outline: none;
+  padding: 13px 12px; color: var(--text); font-size: 15px;
+  letter-spacing: 2px;
+}
+.lock-field::placeholder { letter-spacing: 4px; color: var(--text3); }
+.lock-eye {
+  width: 40px; height: 40px; display: flex; align-items: center;
+  justify-content: center; color: var(--text3); flex-shrink: 0;
+  transition: color 0.2s;
+}
+.lock-eye:hover { color: var(--primary-light); }
+
+.lock-msg { min-height: 20px; font-size: 13px; margin-bottom: 10px; transition: all 0.2s; }
+.lock-msg-error { color: var(--red); }
+.lock-msg-ok    { color: var(--green); }
+
+.lock-btn { width: 100%; padding: 14px; font-size: 15px; border-radius: 12px; }
+
+.lock-hint {
+  font-size: 12px; color: var(--text3);
+  margin-top: 20px; padding: 10px 14px;
+  background: rgba(255,255,255,0.03); border-radius: 8px;
+  border: 1px dashed var(--border);
+}
+
+/* shake animation for wrong password */
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-8px); }
+  40%     { transform: translateX(8px); }
+  60%     { transform: translateX(-5px); }
+  80%     { transform: translateX(5px); }
+}
+.shake { animation: shake 0.45s cubic-bezier(0.36,0.07,0.19,0.97) both; }
+
+/* ── Maintenance badge ────────────────────────────────────────── */
+.maintenance-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.35);
+  color: var(--red); border-radius: 99px; padding: 5px 12px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.3); } 50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); } }
+
+/* ── Promotions & Settings grids ─────────────────────────────── */
+.promo-grid    { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.settings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 24px; }
+
+/* ── Promo code item ─────────────────────────────────────────── */
+.promo-item {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px;
+}
+.promo-code { font-family: monospace; font-weight: 700; font-size: 14px; color: var(--primary-light); letter-spacing: 1px; }
+.promo-disc { font-size: 13px; color: var(--gold); font-weight: 600; }
+
+/* ── Activity log entry ──────────────────────────────────────── */
+.activity-entry {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 20px; border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.activity-entry:last-child { border-bottom: none; }
+.activity-entry:hover { background: rgba(255,255,255,0.02); }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); margin-top: 6px; flex-shrink: 0; }
+.activity-dot.del { background: var(--red); }
+.activity-dot.edit { background: var(--gold); }
+.activity-text { font-size: 14px; flex: 1; }
+.activity-time { font-size: 12px; color: var(--text3); white-space: nowrap; }
+
+@media (max-width: 700px) {
+  .promo-grid    { grid-template-columns: 1fr; }
+  .settings-grid { grid-template-columns: 1fr; }
+}

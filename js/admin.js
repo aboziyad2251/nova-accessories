@@ -712,4 +712,326 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // ══════════════════════════════════════════════════════════════════
+  // NEW FEATURES — Phase 3
+  // ══════════════════════════════════════════════════════════════════
+
+  // ── Extend navigation to new pages ───────────────────────────────
+  const pageExtras = {
+    'page-promotions' : ['adm.promotions', 'adm.tools'],
+    'page-activity'   : ['adm.activity',   'adm.tools'],
+    'page-settings'   : ['adm.settings',   'adm.tools'],
+  };
+  Object.assign(
+    // Monkey-patch showPage to handle new pages
+    {}, // no-op placeholder — we wire event listeners below
+  );
+  document.querySelectorAll('.sidebar-link[data-page]').forEach(link => {
+    const pid = link.dataset.page;
+    if (pageExtras[pid]) {
+      link.addEventListener('click', () => {
+        document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.sidebar-link[data-page]').forEach(l => l.classList.remove('active'));
+        const el = document.getElementById(pid);
+        if (el) el.classList.add('active');
+        link.classList.add('active');
+        const [tk, sk] = pageExtras[pid];
+        document.getElementById('topbarTitle').textContent = t(tk);
+        document.getElementById('topbarSub').textContent   = t(sk);
+        if (pid === 'page-promotions') renderPromotionsPage();
+        if (pid === 'page-activity')   renderActivityPage();
+        if (pid === 'page-settings')   renderSettingsPage();
+      });
+    }
+  });
+
+  // ── Activity Log ─────────────────────────────────────────────────
+  function logActivity(type, message) {
+    const log = JSON.parse(localStorage.getItem('nova_activity_log') || '[]');
+    log.unshift({ type, message, time: Date.now() });
+    localStorage.setItem('nova_activity_log', JSON.stringify(log.slice(0, 50)));
+  }
+
+  function renderActivityPage() {
+    const log = JSON.parse(localStorage.getItem('nova_activity_log') || '[]');
+    const el  = document.getElementById('activityLog');
+    if (!el) return;
+    if (!log.length) { el.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text3);">📋 ${lang()==='ar'?'لا يوجد نشاط بعد':'No activity yet'}</div>`; return; }
+    el.innerHTML = log.map(entry => {
+      const dot  = entry.type === 'delete' ? 'del' : (entry.type === 'edit' ? 'edit' : '');
+      const time = new Date(entry.time).toLocaleString(lang() === 'ar' ? 'ar-SA' : 'en-US');
+      return `<div class="activity-entry">
+        <div class="activity-dot ${dot}"></div>
+        <div class="activity-text">${entry.message}</div>
+        <div class="activity-time">${time}</div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('clearActivityBtn')?.addEventListener('click', () => {
+    localStorage.removeItem('nova_activity_log');
+    renderActivityPage();
+  });
+
+  // Patch showToast to also log activity
+  const _origShowToast = showToast;
+  // We just call logActivity at key action points instead
+
+  // ── Promotions Page ──────────────────────────────────────────────
+  function renderPromotionsPage() {
+    // Flash sale
+    const fs = JSON.parse(localStorage.getItem('nova_flash_sale') || '{}');
+    const fsEnd  = document.getElementById('flashSaleEnd');
+    const fsAct  = document.getElementById('flashSaleActive');
+    if (fsEnd && fs.endTime) fsEnd.value = new Date(fs.endTime).toISOString().slice(0,16);
+    if (fsAct) fsAct.checked = !!fs.active;
+
+    // Promo codes
+    renderPromoCodes();
+  }
+
+  document.getElementById('saveFlashSaleBtn')?.addEventListener('click', () => {
+    const endVal = document.getElementById('flashSaleEnd')?.value;
+    const active = document.getElementById('flashSaleActive')?.checked;
+    const data   = { active, endTime: endVal ? new Date(endVal).toISOString() : null };
+    localStorage.setItem('nova_flash_sale', JSON.stringify(data));
+    // Dispatch storage event manually for same-tab
+    window.dispatchEvent(new StorageEvent('storage', { key: 'nova_flash_sale' }));
+    logActivity('edit', lang()==='ar' ? 'تم تحديث إعدادات الفلاش سيل' : 'Flash sale settings updated');
+    showToast('success', lang()==='ar' ? '✅ تم حفظ إعدادات الفلاش سيل' : '✅ Flash sale settings saved');
+  });
+
+  function renderPromoCodes() {
+    const codes  = JSON.parse(localStorage.getItem('nova_promo_codes') || '[{"code":"NOVA10","discount":10,"active":true}]');
+    const list   = document.getElementById('promoList');
+    if (!list) return;
+    list.innerHTML = codes.map((c, i) => `
+      <div class="promo-item">
+        <span class="promo-code">${c.code}</span>
+        <span class="promo-disc">-${c.discount}%</span>
+        <button class="btn-icon" style="background:rgba(239,68,68,0.1);color:var(--red);" onclick="deletePromoCode(${i})">🗑️</button>
+      </div>`).join('');
+    if (!codes.length) list.innerHTML = `<p style="color:var(--text3);font-size:13px;text-align:center;padding:20px;">${lang()==='ar'?'لا توجد أكواد':'No codes yet'}</p>`;
+  }
+
+  window.deletePromoCode = function(idx) {
+    const codes = JSON.parse(localStorage.getItem('nova_promo_codes') || '[]');
+    codes.splice(idx, 1);
+    localStorage.setItem('nova_promo_codes', JSON.stringify(codes));
+    renderPromoCodes();
+  };
+
+  document.getElementById('addPromoBtn')?.addEventListener('click', () => {
+    const code = document.getElementById('promoCode')?.value.trim().toUpperCase();
+    const disc = parseInt(document.getElementById('promoDiscount')?.value, 10);
+    if (!code || !disc || disc < 1 || disc > 100) {
+      showToast('error', t('adm.toast.required'));
+      return;
+    }
+    const codes = JSON.parse(localStorage.getItem('nova_promo_codes') || '[]');
+    if (codes.find(c => c.code === code)) {
+      showToast('error', lang()==='ar' ? '⚠️ الكود موجود بالفعل' : '⚠️ Code already exists');
+      return;
+    }
+    codes.push({ code, discount: disc, active: true });
+    localStorage.setItem('nova_promo_codes', JSON.stringify(codes));
+    document.getElementById('promoCode').value = '';
+    document.getElementById('promoDiscount').value = '';
+    renderPromoCodes();
+    logActivity('add', lang()==='ar' ? `تمت إضافة كود الخصم: ${code}` : `Promo code added: ${code}`);
+    showToast('success', lang()==='ar' ? `✅ تمت إضافة الكود: ${code}` : `✅ Code added: ${code}`);
+  });
+
+  // ── Settings Page ─────────────────────────────────────────────────
+  function renderSettingsPage() {
+    const ms = Auth.getMaintenanceState();
+    const ft = JSON.parse(localStorage.getItem('nova_features') || '{}');
+
+    const maintToggle = document.getElementById('settingsMaintToggle');
+    const maintMsgEn  = document.getElementById('maintMsgEn');
+    const maintMsgAr  = document.getElementById('maintMsgAr');
+    const maintBackBy = document.getElementById('maintBackBy');
+
+    if (maintToggle) maintToggle.checked = ms.active;
+    if (maintMsgEn)  maintMsgEn.value    = ms.messageEn || '';
+    if (maintMsgAr)  maintMsgAr.value    = ms.messageAr || '';
+    if (maintBackBy && ms.backBy) maintBackBy.value = new Date(ms.backBy).toISOString().slice(0,16);
+
+    if (document.getElementById('toggleSocialProof')) document.getElementById('toggleSocialProof').checked = ft.social !== false;
+    if (document.getElementById('togglePromoPopup'))  document.getElementById('togglePromoPopup').checked  = ft.promo  !== false;
+    if (document.getElementById('toggleBundles'))     document.getElementById('toggleBundles').checked     = ft.bundles !== false;
+
+    // Update maintenance badge
+    syncMaintBadge();
+  }
+
+  function syncMaintBadge() {
+    const badge = document.getElementById('maintenanceBadge');
+    if (badge) badge.style.display = Auth.isMaintenanceActive() ? 'inline-flex' : 'none';
+  }
+
+  // Save maintenance settings
+  document.getElementById('saveMaintBtn')?.addEventListener('click', () => {
+    const active  = document.getElementById('settingsMaintToggle')?.checked;
+    const msgEn   = document.getElementById('maintMsgEn')?.value || 'We\'ll be back soon ✨';
+    const msgAr   = document.getElementById('maintMsgAr')?.value || 'نعود قريباً ✨';
+    const backBy  = document.getElementById('maintBackBy')?.value;
+    Auth.setMaintenanceState({ active, messageEn: msgEn, messageAr: msgAr, backBy: backBy ? new Date(backBy).toISOString() : '' });
+    syncMaintBadge();
+    logActivity('edit', lang()==='ar' ? `وضع الصيانة: ${active?'مفعّل':'معطّل'}` : `Maintenance mode: ${active?'ON':'OFF'}`);
+    showToast('success', lang()==='ar' ? '✅ تم حفظ إعدادات الصيانة' : '✅ Maintenance settings saved');
+  });
+
+  // Toggle maintenance on sidebar (maintenance badge click)
+  document.getElementById('maintenanceBadge')?.addEventListener('click', () => {
+    const isNow = Auth.toggleMaintenance();
+    syncMaintBadge();
+    showToast('success', isNow
+      ? (lang()==='ar' ? '🔴 وضع الصيانة مفعّل' : '🔴 Maintenance ON')
+      : (lang()==='ar' ? '🟢 وضع الصيانة أُلغي' : '🟢 Maintenance OFF'));
+  });
+  syncMaintBadge();
+
+  // Save features toggles
+  document.getElementById('saveFeaturesBtn')?.addEventListener('click', () => {
+    const ft = {
+      social : document.getElementById('toggleSocialProof')?.checked,
+      promo  : document.getElementById('togglePromoPopup')?.checked,
+      bundles: document.getElementById('toggleBundles')?.checked,
+    };
+    localStorage.setItem('nova_features', JSON.stringify(ft));
+    logActivity('edit', lang()==='ar' ? 'تم تحديث إعدادات الميزات' : 'Feature settings updated');
+    showToast('success', lang()==='ar' ? '✅ تم حفظ الإعدادات' : '✅ Settings saved');
+  });
+
+  // Change password
+  document.getElementById('changePwBtn')?.addEventListener('click', async () => {
+    const cur  = document.getElementById('pwCurrent')?.value;
+    const nw   = document.getElementById('pwNew')?.value;
+    const conf = document.getElementById('pwConfirm')?.value;
+    if (!cur || !nw || !conf) { showToast('error', t('adm.toast.required')); return; }
+    if (nw !== conf) { showToast('error', lang()==='ar' ? '⚠️ كلمتا المرور لا تتطابقان' : '⚠️ Passwords do not match'); return; }
+    if (nw.length < 6) { showToast('error', lang()==='ar' ? '⚠️ كلمة المرور قصيرة جداً (6 أحرف على الأقل)' : '⚠️ Password too short (min 6 chars)'); return; }
+    const ok = await Auth.changePassword(cur, nw);
+    if (ok) {
+      ['pwCurrent','pwNew','pwConfirm'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      logActivity('edit', lang()==='ar' ? 'تم تغيير كلمة المرور' : 'Password changed');
+      showToast('success', lang()==='ar' ? '✅ تم تغيير كلمة المرور' : '✅ Password changed');
+    } else {
+      showToast('error', lang()==='ar' ? '❌ كلمة المرور الحالية خاطئة' : '❌ Current password is wrong');
+    }
+  });
+
+  // Logout
+  document.getElementById('logoutBtn')?.addEventListener('click', () => {
+    Auth.endSession();
+    location.reload();
+  });
+
+  // ── Bulk Operations (product table) ──────────────────────────────
+  // We add a checkbox column to the products table when it's rendered.
+  // The renderProducts() function already exists — we patch the body.
+  // Bulk action bar appears when any checkbox is selected.
+
+  let bulkSelected = new Set();
+
+  // We extend the existing renderProducts to include checkboxes
+  const _origRenderProducts = renderProducts; // save ref
+
+  function renderProductsWithBulk() {
+    _origRenderProducts();
+    // Insert checkbox column into existing table
+    const tbody = document.getElementById('productsTableBody');
+    if (!tbody) return;
+    const rows = tbody.querySelectorAll('tr');
+    rows.forEach(row => {
+      const idAttr = row.querySelector('[data-id]');
+      const pid    = idAttr?.dataset.id;
+      if (!pid) return;
+      const td = document.createElement('td');
+      td.innerHTML = `<input type="checkbox" class="bulk-cb" data-id="${pid}" ${bulkSelected.has(pid)?'checked':''}>`;
+      row.insertBefore(td, row.firstChild);
+    });
+
+    // Add header checkbox
+    const thead = tbody.closest('table')?.querySelector('thead tr');
+    if (thead && !thead.querySelector('.bulk-th')) {
+      const th = document.createElement('th');
+      th.className = 'bulk-th';
+      th.innerHTML = `<input type="checkbox" id="selectAllCb">`;
+      thead.insertBefore(th, thead.firstChild);
+      document.getElementById('selectAllCb')?.addEventListener('change', e => {
+        tbody.querySelectorAll('.bulk-cb').forEach(cb => {
+          cb.checked = e.target.checked;
+          if (e.target.checked) bulkSelected.add(cb.dataset.id);
+          else bulkSelected.delete(cb.dataset.id);
+        });
+        updateBulkBar();
+      });
+    }
+
+    tbody.querySelectorAll('.bulk-cb').forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (cb.checked) bulkSelected.add(cb.dataset.id);
+        else            bulkSelected.delete(cb.dataset.id);
+        updateBulkBar();
+      });
+    });
+  }
+
+  function updateBulkBar() {
+    let bar = document.getElementById('bulkBar');
+    if (bulkSelected.size === 0) {
+      if (bar) bar.remove();
+      return;
+    }
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'bulkBar';
+      bar.className = 'bulk-bar';
+      document.getElementById('page-products')?.prepend(bar);
+    }
+    const n = bulkSelected.size;
+    bar.innerHTML = `
+      <span style="font-size:14px;font-weight:600;">${lang()==='ar'?`${n} محدد`:`${n} selected`}</span>
+      <button class="btn btn-sm btn-danger" id="bulkDeleteBtn">${lang()==='ar'?'🗑️ حذف المحدد':'🗑️ Delete Selected'}</button>
+      <button class="btn btn-sm btn-outline" id="bulkFeaturedBtn">${lang()==='ar'?'⭐ تبديل المميز':'⭐ Toggle Featured'}</button>
+      <button class="btn btn-sm btn-outline" id="bulkClearBtn">${lang()==='ar'?'إلغاء':'Clear'}</button>
+    `;
+    document.getElementById('bulkDeleteBtn')?.addEventListener('click', () => {
+      const prods = Store.getProducts().filter(p => !bulkSelected.has(p.id));
+      Store.saveProducts(prods);
+      logActivity('delete', lang()==='ar' ? `تم حذف ${bulkSelected.size} منتج` : `Deleted ${bulkSelected.size} products`);
+      bulkSelected.clear();
+      renderProductsWithBulk();
+      updateBulkBar();
+      showToast('success', lang()==='ar' ? '🗑️ تم حذف المنتجات المحددة' : '🗑️ Selected products deleted');
+    });
+    document.getElementById('bulkFeaturedBtn')?.addEventListener('click', () => {
+      const prods = Store.getProducts().map(p => {
+        if (bulkSelected.has(p.id)) p.featured = !p.featured;
+        return p;
+      });
+      Store.saveProducts(prods);
+      logActivity('edit', lang()==='ar' ? `تم تبديل المميز لـ ${bulkSelected.size} منتج` : `Toggled featured for ${bulkSelected.size} products`);
+      bulkSelected.clear();
+      renderProductsWithBulk();
+      updateBulkBar();
+      showToast('success', lang()==='ar' ? '✅ تم تحديث المنتجات' : '✅ Products updated');
+    });
+    document.getElementById('bulkClearBtn')?.addEventListener('click', () => {
+      bulkSelected.clear();
+      renderProductsWithBulk();
+      updateBulkBar();
+    });
+  }
+
+  // Override renderProducts call to include bulk
+  // (called after DOMContentLoaded setup, we re-render with bulk)
+  setTimeout(() => {
+    const activeEl = document.querySelector('.admin-page.active');
+    if (activeEl?.id === 'page-products') renderProductsWithBulk();
+  }, 100);
+
 });
+

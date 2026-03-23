@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المفضلة — Nova Accessories</title>
+  <meta name="description" content="قائمة مفضلاتك في نوفا للإكسسوارات.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/rtl.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+  <script src="js/auth.js"></script>
+  <script src="js/i18n.js"></script>
+  <style>
+    /* ── Wishlist Page Specific Styles ─────────────────────────────── */
+    .wl-page { min-height: 80vh; padding: 120px 0 80px; }
+
+    .wl-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .wl-title-wrap { display: flex; align-items: center; gap: 14px; }
+    .wl-title-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--grad);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; box-shadow: 0 0 20px rgba(139,92,246,.35);
+    }
+    .wl-title { font-size: 1.9rem; font-weight: 800; }
+    .wl-count {
+      background: rgba(139,92,246,.18);
+      color: var(--primary-light);
+      font-size: .8rem; font-weight: 700;
+      padding: 3px 12px; border-radius: 20px;
+      border: 1px solid rgba(139,92,246,.3);
+    }
+    .wl-clear-btn {
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      padding: 10px 22px; border-radius: var(--radius-sm);
+      cursor: pointer; font-size: .85rem;
+      transition: var(--transition);
+    }
+    .wl-clear-btn:hover { background: rgba(239,68,68,.15); color: #f87171; border-color: rgba(239,68,68,.3); }
+
+    /* ── Grid ────────────────────────────────────────────────────────── */
+    .wl-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .wl-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition);
+      position: relative;
+      animation: wlCardIn .4s cubic-bezier(.4,0,.2,1) both;
+    }
+    .wl-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-glow); border-color: var(--border2); }
+
+    @keyframes wlCardIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .wl-card-img {
+      width: 100%; aspect-ratio: 1/1;
+      object-fit: cover; display: block;
+      transition: transform .4s;
+    }
+    .wl-card:hover .wl-card-img { transform: scale(1.05); }
+
+    .wl-card-img-wrap { overflow: hidden; position: relative; }
+
+    .wl-card-badge {
+      position: absolute; top: 12px; inset-inline-start: 12px;
+      background: var(--grad); color: #fff;
+      font-size: .7rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .wl-card-badge.new   { background: linear-gradient(135deg,#10b981,#06b6d4); }
+    .wl-card-badge.trend { background: linear-gradient(135deg,#f59e0b,#ec4899); }
+
+    .wl-remove-btn {
+      position: absolute; top: 12px; inset-inline-end: 12px;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(0,0,0,.55); backdrop-filter: blur(8px);
+      border: none; color: #f87171;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: var(--transition);
+      font-size: 1rem;
+    }
+    .wl-remove-btn:hover { background: rgba(239,68,68,.3); transform: scale(1.1); }
+
+    .wl-card-body { padding: 18px; }
+    .wl-card-name {
+      font-size: 1rem; font-weight: 700;
+      margin-bottom: 6px; line-height: 1.4;
+    }
+    .wl-card-name a { color: var(--text); text-decoration: none; }
+    .wl-card-name a:hover { color: var(--primary-light); }
+
+    .wl-card-cat {
+      font-size: .75rem; color: var(--text3);
+      margin-bottom: 12px;
+    }
+
+    .wl-card-price-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .wl-price { font-size: 1.15rem; font-weight: 800; color: var(--primary-light); }
+    .wl-price-orig { font-size: .85rem; color: var(--text3); text-decoration: line-through; }
+    .wl-price-save {
+      font-size: .72rem; font-weight: 700; color: #4ade80;
+      background: rgba(74,222,128,.12); padding: 2px 8px; border-radius: 20px;
+    }
+
+    .wl-stock-out { font-size: .75rem; color: #f87171; margin-bottom: 8px; }
+
+    .wl-card-actions { display: flex; gap: 10px; }
+    .wl-add-cart {
+      flex: 1;
+      background: var(--grad);
+      color: #fff; border: none;
+      padding: 11px 0; border-radius: var(--radius-sm);
+      font-size: .85rem; font-weight: 700;
+      cursor: pointer; transition: var(--transition);
+    }
+    .wl-add-cart:hover { opacity: .9; transform: translateY(-1px); }
+    .wl-add-cart:disabled {
+      background: var(--surface2); color: var(--text3);
+      cursor: not-allowed; opacity: 1; transform: none;
+    }
+
+    /* ── Empty State ─────────────────────────────────────────────────── */
+    .wl-empty {
+      text-align: center;
+      padding: 80px 20px;
+      animation: wlCardIn .5s ease both;
+    }
+    .wl-empty-icon {
+      font-size: 5rem;
+      margin-bottom: 20px;
+      filter: grayscale(0.3);
+      animation: heartBeat 2.5s ease-in-out infinite;
+    }
+    @keyframes heartBeat {
+      0%,100% { transform: scale(1); }
+      14%      { transform: scale(1.15); }
+      28%      { transform: scale(1); }
+      42%      { transform: scale(1.1); }
+      56%      { transform: scale(1); }
+    }
+    .wl-empty-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 10px; }
+    .wl-empty-sub   { color: var(--text2); margin-bottom: 32px; font-size: .95rem; }
+    .wl-empty-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--grad); color: #fff;
+      padding: 14px 36px; border-radius: 999px;
+      font-weight: 700; text-decoration: none;
+      font-size: .95rem; transition: var(--transition);
+      box-shadow: 0 8px 32px rgba(139,92,246,.35);
+    }
+    .wl-empty-cta:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(139,92,246,.5); }
+
+    /* ── Toast ───────────────────────────────────────────────────────── */
+    #wlToast {
+      position: fixed; bottom: 32px; inset-inline-end: 32px; z-index: 9999;
+      background: var(--surface); border: 1px solid var(--border2);
+      color: var(--text); padding: 14px 22px; border-radius: var(--radius);
+      font-size: .9rem; font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(20px); opacity: 0;
+      transition: all .3s cubic-bezier(.4,0,.2,1);
+      pointer-events: none;
+    }
+    #wlToast.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-mark">💎</div>
+          <div>
+            <span class="logo-text">Nova</span>
+            <span class="logo-sub">Accessories</span>
+          </div>
+        </a>
+
+        <nav class="nav" aria-label="Main navigation">
+          <a href="index.html"        class="nav-link" data-i18n="nav.home">الرئيسية</a>
+          <a href="index.html#shop"   class="nav-link" data-i18n="nav.shop">المتجر</a>
+          <a href="wishlist.html"     class="nav-link active" data-i18n="nav.wishlist">المفضلة</a>
+          <a href="admin.html"        class="nav-link" style="color:var(--primary-light);" data-i18n="nav.admin">⚙️ الإدارة</a>
+          <a href="wishlist.html" class="nav-link wishlist-nav-link" id="wishlistNavLink" style="display:none">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </a>
+        </nav>
+
+        <div class="header-actions">
+          <div class="lang-switch" role="group" aria-label="Language selector">
+            <button class="lang-btn active" id="langAr" onclick="I18N.setLang('ar')">ع</button>
+            <button class="lang-btn"        id="langEn" onclick="I18N.setLang('en')">EN</button>
+          </div>
+
+          <!-- Cart -->
+          <button class="cart-btn" id="cartBtn" aria-label="Cart">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span class="cart-count" id="cartCount">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Wishlist Page ───────────────────────────────────────────────── -->
+  <main class="wl-page">
+    <div class="container">
+
+      <div class="wl-header">
+        <div class="wl-title-wrap">
+          <div class="wl-title-icon">❤️</div>
+          <div>
+            <h1 class="wl-title" data-i18n="wl.title">المفضلة</h1>
+          </div>
+          <span class="wl-count" id="wlCount">0</span>
+        </div>
+        <button class="wl-clear-btn" id="wlClearBtn" data-i18n="wl.clear">مسح الكل</button>
+      </div>
+
+      <!-- Grid / Empty state rendered by JS -->
+      <div id="wlContent"></div>
+
+    </div>
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────────────── -->
+  <footer style="padding:40px 0;text-align:center;color:var(--text3);font-size:.85rem;border-top:1px solid var(--border);">
+    <div class="container">
+      <p>© 2025 Nova Accessories — <span data-i18n="footer.rights">جميع الحقوق محفوظة</span></p>
+    </div>
+  </footer>
+
+  <!-- ── Toast ──────────────────────────────────────────────────────── -->
+  <div id="wlToast"></div>
+
+  <!-- ── Scripts ────────────────────────────────────────────────────── -->
+  <script src="js/data.js"></script>
+  <script src="js/wishlist.js"></script>
+</body>
+</html>

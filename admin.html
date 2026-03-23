@@ -7,9 +7,53 @@
   <link rel="stylesheet" href="css/admin.css">
   <link rel="stylesheet" href="css/rtl.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+  <script src="js/auth.js"></script>
   <script src="js/i18n.js"></script>
 </head>
 <body>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       LOCK SCREEN  (shown by default; hidden after auth passes)
+  ══════════════════════════════════════════════════════════════════ -->
+  <div id="adminLockScreen" class="lock-screen">
+    <div class="lock-bg-orb lock-orb1"></div>
+    <div class="lock-bg-orb lock-orb2"></div>
+    <div class="lock-card">
+      <div class="lock-logo">
+        <div class="lock-logo-mark">💎</div>
+        <div class="lock-brand-name">Nova Admin</div>
+      </div>
+      <h1 class="lock-title" data-i18n="lock.title">أدخل كلمة المرور</h1>
+      <p class="lock-sub"   data-i18n="lock.sub">للوصول إلى لوحة التحكم</p>
+
+      <div class="lock-field-wrap" id="lockFieldWrap">
+        <svg class="lock-field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <input id="lockInput" type="password" class="lock-field"
+               placeholder="••••••••" autocomplete="current-password">
+        <button type="button" class="lock-eye" id="lockEye" aria-label="Toggle visibility">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="lock-msg" id="lockMsg"></div>
+
+      <button class="btn btn-primary lock-btn" id="lockSubmit" style="width:100%;margin-top:8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+        </svg>
+        <span data-i18n="lock.enter">دخول</span>
+      </button>
+
+      <p class="lock-hint" data-i18n="lock.hint">كلمة المرور الافتراضية: admin123</p>
+    </div>
+  </div>
+
+  <!-- ── Admin content (hidden until authenticated) ─────────────── -->
+  <div id="adminContent" style="display:none;width:100%;min-height:100vh;display:none;flex:1;">
 
   <!-- ── Sidebar ──────────────────────────────────────────────────── -->
   <aside class="sidebar">
@@ -41,6 +85,20 @@
         <span class="link-icon">🛍️</span>
         <span data-i18n="adm.view.store">عرض المتجر</span>
       </a>
+
+      <div class="nav-section-label" style="margin-top:16px;" data-i18n="adm.tools">الأدوات</div>
+      <div class="sidebar-link" data-page="page-promotions">
+        <span class="link-icon">🏷️</span>
+        <span data-i18n="adm.promotions">العروض والأكواد</span>
+      </div>
+      <div class="sidebar-link" data-page="page-activity">
+        <span class="link-icon">📋</span>
+        <span data-i18n="adm.activity">سجل النشاط</span>
+      </div>
+      <div class="sidebar-link" data-page="page-settings">
+        <span class="link-icon">⚙️</span>
+        <span data-i18n="adm.settings">الإعدادات</span>
+      </div>
     </nav>
 
     <div class="sidebar-footer">
@@ -55,9 +113,14 @@
 
     <!-- Topbar -->
     <div class="admin-topbar">
-      <div>
-        <div class="topbar-title" id="topbarTitle" data-i18n="adm.dashboard">لوحة التحكم</div>
-        <div class="topbar-sub"   id="topbarSub"   data-i18n="adm.sub.dash">نظرة عامة على متجرك</div>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div>
+          <div class="topbar-title" id="topbarTitle" data-i18n="adm.dashboard">لوحة التحكم</div>
+          <div class="topbar-sub"   id="topbarSub"   data-i18n="adm.sub.dash">نظرة عامة على متجرك</div>
+        </div>
+        <div id="maintenanceBadge" class="maintenance-badge" style="display:none">
+          🔴 <span data-i18n="adm.maint.on">وضع الصيانة</span>
+        </div>
       </div>
       <div class="topbar-actions">
         <!-- Language Switch -->
@@ -212,7 +275,127 @@
       </div>
     </div>
 
+    <!-- ── Promotions Page ────────────────────────────────────────── -->
+    <div class="admin-page" id="page-promotions">
+      <div class="promo-grid">
+        <!-- Flash Sale Card -->
+        <div class="table-card" style="padding:28px;">
+          <h3 class="form-title" style="margin-bottom:24px;">⚡ <span data-i18n="adm.flashsale">فلاش سيل</span></h3>
+          <div class="form-group">
+            <label class="form-label" data-i18n="adm.f.sale.end">تاريخ ووقت انتهاء العرض</label>
+            <input type="datetime-local" id="flashSaleEnd" class="form-input">
+          </div>
+          <div class="toggle-wrap" style="margin-top:16px;">
+            <label class="toggle"><input type="checkbox" id="flashSaleActive"><span class="toggle-slider"></span></label>
+            <span class="toggle-label" data-i18n="adm.flashsale.active">تفعيل الفلاش سيل</span>
+          </div>
+          <button class="btn btn-primary" id="saveFlashSaleBtn" style="margin-top:20px;width:100%;" data-i18n="adm.save">حفظ التغييرات</button>
+        </div>
+
+        <!-- Promo Codes Card -->
+        <div class="table-card" style="padding:28px;">
+          <h3 class="form-title" style="margin-bottom:24px;">🎟️ <span data-i18n="adm.promocodes">أكواد الخصم</span></h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" data-i18n="adm.f.code">الكود</label>
+              <input type="text" id="promoCode" class="form-input" placeholder="NOVA10">
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-i18n="adm.f.discount">الخصم %</label>
+              <input type="number" id="promoDiscount" class="form-input" min="1" max="100" placeholder="10">
+            </div>
+          </div>
+          <button class="btn btn-primary" id="addPromoBtn" style="margin-top:16px;width:100%;" data-i18n="adm.add.code">إضافة كود</button>
+          <div id="promoList" style="margin-top:20px;display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Activity Log Page ───────────────────────────────────────── -->
+    <div class="admin-page" id="page-activity">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">📋 <span data-i18n="adm.activity">سجل النشاط</span></div>
+          <button class="btn btn-outline btn-sm" id="clearActivityBtn" data-i18n="adm.clear.log">مسح السجل</button>
+        </div>
+        <div id="activityLog" style="padding:12px;"></div>
+      </div>
+    </div>
+
+    <!-- ── Settings Page ───────────────────────────────────────────── -->
+    <div class="admin-page" id="page-settings">
+      <div class="settings-grid">
+
+        <!-- Maintenance Mode -->
+        <div class="table-card" style="padding:28px;">
+          <h3 class="form-title" style="margin-bottom:24px;">🔧 <span data-i18n="adm.maint.title">وضع الصيانة</span></h3>
+          <div class="toggle-wrap" style="margin-bottom:20px;">
+            <label class="toggle"><input type="checkbox" id="settingsMaintToggle"><span class="toggle-slider"></span></label>
+            <span class="toggle-label" data-i18n="adm.maint.toggle">تفعيل وضع الصيانة</span>
+          </div>
+          <div class="form-group" style="margin-bottom:14px;">
+            <label class="form-label" data-i18n="adm.maint.msg.en">رسالة الصيانة (إنجليزي)</label>
+            <input type="text" id="maintMsgEn" class="form-input" placeholder="We'll be back soon ✨">
+          </div>
+          <div class="form-group" style="margin-bottom:14px;">
+            <label class="form-label" data-i18n="adm.maint.msg.ar">رسالة الصيانة (عربي)</label>
+            <input type="text" id="maintMsgAr" class="form-input" placeholder="نعود قريباً ✨">
+          </div>
+          <div class="form-group" style="margin-bottom:20px;">
+            <label class="form-label" data-i18n="adm.maint.backby">وقت العودة (اختياري)</label>
+            <input type="datetime-local" id="maintBackBy" class="form-input">
+          </div>
+          <button class="btn btn-primary" id="saveMaintBtn" style="width:100%;" data-i18n="adm.save">حفظ</button>
+        </div>
+
+        <!-- Social Proof & Promo Popup Toggles -->
+        <div class="table-card" style="padding:28px;">
+          <h3 class="form-title" style="margin-bottom:24px;">🎛️ <span data-i18n="adm.features">الميزات</span></h3>
+          <div class="toggle-wrap" style="margin-bottom:16px;">
+            <label class="toggle"><input type="checkbox" id="toggleSocialProof" checked><span class="toggle-slider"></span></label>
+            <span class="toggle-label" data-i18n="adm.toggle.social">الإشعارات الاجتماعية (FOMO)</span>
+          </div>
+          <div class="toggle-wrap" style="margin-bottom:16px;">
+            <label class="toggle"><input type="checkbox" id="togglePromoPopup" checked><span class="toggle-slider"></span></label>
+            <span class="toggle-label" data-i18n="adm.toggle.promo">بوب آب الترحيب والخصم</span>
+          </div>
+          <div class="toggle-wrap" style="margin-bottom:24px;">
+            <label class="toggle"><input type="checkbox" id="toggleBundles" checked><span class="toggle-slider"></span></label>
+            <span class="toggle-label" data-i18n="adm.toggle.bundles">قسم الباقات</span>
+          </div>
+          <button class="btn btn-primary" id="saveFeaturesBtn" style="width:100%;" data-i18n="adm.save">حفظ</button>
+        </div>
+
+        <!-- Change Password -->
+        <div class="table-card" style="padding:28px;">
+          <h3 class="form-title" style="margin-bottom:24px;">🔑 <span data-i18n="adm.change.pw">تغيير كلمة المرور</span></h3>
+          <div class="form-group" style="margin-bottom:14px;">
+            <label class="form-label" data-i18n="adm.pw.current">كلمة المرور الحالية</label>
+            <input type="password" id="pwCurrent" class="form-input">
+          </div>
+          <div class="form-group" style="margin-bottom:14px;">
+            <label class="form-label" data-i18n="adm.pw.new">كلمة المرور الجديدة</label>
+            <input type="password" id="pwNew" class="form-input">
+          </div>
+          <div class="form-group" style="margin-bottom:20px;">
+            <label class="form-label" data-i18n="adm.pw.confirm">تأكيد كلمة المرور</label>
+            <input type="password" id="pwConfirm" class="form-input">
+          </div>
+          <button class="btn btn-primary" id="changePwBtn" style="width:100%;" data-i18n="adm.pw.save">تحديث كلمة المرور</button>
+        </div>
+
+        <!-- Logout -->
+        <div class="table-card" style="padding:28px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:16px;text-align:center;">
+          <div style="font-size:48px;">🚪</div>
+          <h3 class="form-title" data-i18n="adm.logout">تسجيل الخروج</h3>
+          <p style="color:var(--text3);font-size:13px;" data-i18n="adm.logout.sub">إنهاء الجلسة والعودة لشاشة القفل</p>
+          <button class="btn btn-danger" id="logoutBtn" style="width:100%;" data-i18n="adm.logout.btn">تسجيل الخروج</button>
+        </div>
+      </div>
+    </div>
+
   </main>
+  </div><!-- /#adminContent -->
 
   <!-- ── Overlays ───────────────────────────────────────────────────── -->
   <div class="form-overlay" id="productFormOverlay"></div>
@@ -237,5 +420,91 @@
   <!-- ── Scripts ───────────────────────────────────────────────────── -->
   <script src="js/data.js"></script>
   <script src="js/admin.js"></script>
+
+  <script>
+  /* ── Lock Screen Logic ─────────────────────────────────────────── */
+  (function initLockScreen() {
+    const screen  = document.getElementById('adminLockScreen');
+    const content = document.getElementById('adminContent');
+    const input   = document.getElementById('lockInput');
+    const btn     = document.getElementById('lockSubmit');
+    const msg     = document.getElementById('lockMsg');
+    const eye     = document.getElementById('lockEye');
+    const wrap    = document.getElementById('lockFieldWrap');
+
+    function showAdmin() {
+      screen.classList.add('lock-exit');
+      setTimeout(() => {
+        screen.style.display = 'none';
+        content.style.display = 'flex';
+      }, 400);
+    }
+
+    function showMsg(text, isError = true) {
+      msg.textContent = text;
+      msg.className = 'lock-msg ' + (isError ? 'lock-msg-error' : 'lock-msg-ok');
+      if (isError) { wrap.classList.add('shake'); setTimeout(() => wrap.classList.remove('shake'), 500); }
+    }
+
+    function clearMsg() { msg.textContent = ''; msg.className = 'lock-msg'; }
+
+    // Check existing session
+    if (Auth.isSessionValid()) { showAdmin(); return; }
+
+    // Lockout countdown
+    function checkLockout() {
+      if (Auth.isLockedOut()) {
+        const secs = Auth.getLockoutRemaining();
+        const lang = I18N.currentLang;
+        const txt  = lang === 'ar'
+          ? `🔒 انتظر ${secs} ثانية`
+          : `🔒 Wait ${secs}s`;
+        showMsg(txt);
+        input.disabled = true;
+        btn.disabled   = true;
+        setTimeout(checkLockout, 1000);
+      } else {
+        input.disabled = false;
+        btn.disabled   = false;
+        clearMsg();
+      }
+    }
+    checkLockout();
+
+    // Submit
+    async function tryLogin() {
+      if (Auth.isLockedOut()) return;
+      const pw = input.value.trim();
+      if (!pw) return;
+      const ok = await Auth.verify(pw);
+      if (ok) {
+        Auth.startSession();
+        showMsg(I18N.currentLang === 'ar' ? '✅ تم الدخول!' : '✅ Welcome!', false);
+        setTimeout(showAdmin, 600);
+      } else {
+        const fails = Auth.recordFail();
+        const rem   = Auth.MAX_FAILS - (fails % Auth.MAX_FAILS);
+        const lang  = I18N.currentLang;
+        if (Auth.isLockedOut()) {
+          checkLockout();
+        } else {
+          showMsg(lang === 'ar'
+            ? `❌ كلمة مرور خاطئة — ${rem} محاولة متبقية`
+            : `❌ Wrong password — ${rem} attempt${rem>1?'s':''} left`);
+        }
+        input.value = '';
+      }
+    }
+
+    btn.addEventListener('click', tryLogin);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+    input.addEventListener('input', clearMsg);
+
+    // Toggle visibility
+    eye.addEventListener('click', () => {
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  })();
+  </script>
 </body>
 </html>

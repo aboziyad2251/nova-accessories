@@ -8,10 +8,13 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/rtl.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
-  <!-- Load i18n first to avoid flash -->
+  <!-- Load auth + i18n first to avoid flash -->
+  <script src="js/auth.js"></script>
   <script src="js/i18n.js"></script>
 </head>
 <body>
+  <!-- ── Scroll Progress Bar ──────────────────────────────────────── -->
+  <div class="scroll-progress" id="scrollProgress"></div>
 
   <!-- ── Header ──────────────────────────────────────────────────── -->
   <header class="header">
@@ -30,7 +33,11 @@
           <a href="#categories" class="nav-link"        data-i18n="nav.categories">الفئات</a>
           <a href="#shop"       class="nav-link"        data-i18n="nav.shop">المتجر</a>
           <a href="#featured"   class="nav-link"        data-i18n="nav.featured">المميز</a>
-          <a href="admin.html"  class="nav-link" style="color:var(--primary-light);" data-i18n="nav.admin">⚙️ الإدارة</a>
+          <a href="admin.html"   class="nav-link" style="color:var(--primary-light);" data-i18n="nav.admin">⚙️ الإدارة</a>
+          <a href="wishlist.html" class="nav-link wishlist-nav-link" id="wishlistNavLink">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span class="wishlist-nav-count" id="wishlistNavCount" style="display:none">0</span>
+          </a>
         </nav>
 
         <div class="header-actions">
@@ -64,6 +71,23 @@
       </div>
     </div>
   </header>
+
+  <!-- ── Flash Sale Banner ────────────────────────────────────────── -->
+  <div class="flash-banner" id="flashBanner" style="display:none;">
+    <div class="container">
+      <div class="flash-inner">
+        <span class="flash-label" data-i18n="flash.ends">⚡ العرض ينتهي خلال:</span>
+        <div class="flash-timer">
+          <div class="timer-block"><span id="ftHours">00</span><small>h</small></div>
+          <span class="timer-sep">:</span>
+          <div class="timer-block"><span id="ftMins">00</span><small>m</small></div>
+          <span class="timer-sep">:</span>
+          <div class="timer-block"><span id="ftSecs">00</span><small>s</small></div>
+        </div>
+        <button class="flash-dismiss" id="flashDismiss">✕</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ── Hero ─────────────────────────────────────────────────────── -->
   <section class="hero" id="home">
@@ -184,6 +208,20 @@
       <div class="filter-bar" id="filterBar" role="group" aria-label="Product filters"></div>
       <div class="subcat-bar"  id="subcatBar"  style="display:none;" role="group" aria-label="Subcategory filters"></div>
 
+      <!-- Sort & Active Filters Bar -->
+      <div class="sort-filter-row" id="sortFilterRow">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:13px;color:var(--text3);" data-i18n="sort.label">ترتيب:</span>
+          <select class="sort-select" id="sortSelect">
+            <option value="default" data-i18n="sort.default">افتراضي</option>
+            <option value="price-asc" data-i18n="sort.price.asc">السعر: الأقل أولاً</option>
+            <option value="price-desc" data-i18n="sort.price.desc">السعر: الأعلى أولاً</option>
+            <option value="rating" data-i18n="sort.rating">الأعلى تقييماً</option>
+          </select>
+        </div>
+        <div class="active-filters" id="activeFilters"></div>
+      </div>
+
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
         <span id="productCount" style="font-size:14px;color:var(--text3);"></span>
         <a href="admin.html" class="btn btn-outline" style="font-size:13px;padding:8px 16px;">
@@ -196,6 +234,20 @@
       </div>
 
       <div class="products-grid" id="productsGrid"></div>
+    </div>
+  </section>
+
+  <!-- ── Bundle Deals ─────────────────────────────────────────────── -->
+  <section class="section bundles-section" id="bundles">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow" data-i18n="bundle.eyebrow">وفّر أكثر</div>
+        <h2 class="section-title">
+          <span data-i18n="bundle.title">باقات</span>
+          <span data-i18n="bundle.title2"> وخصومات</span>
+        </h2>
+      </div>
+      <div class="bundles-grid" id="bundlesGrid"></div>
     </div>
   </section>
 
@@ -261,6 +313,18 @@
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ── Recently Viewed ──────────────────────────────────────────── -->
+  <section class="section recently-viewed-section" id="recentlyViewedSection" style="display:none;">
+    <div class="container">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+        <h3 class="section-title" style="font-size:22px;margin:0;">
+          👁️ <span data-i18n="rv.title">شاهدته مؤخراً</span>
+        </h3>
+      </div>
+      <div class="rv-track" id="rvTrack"></div>
     </div>
   </section>
 
@@ -339,6 +403,107 @@
       </div>
     </div>
   </footer>
+
+  <!-- ── Maintenance Overlay ──────────────────────────────────────── -->
+  <div class="maintenance-overlay" id="maintenanceOverlay" style="display:none;">
+    <div class="maint-bg-orb maint-orb1"></div>
+    <div class="maint-bg-orb maint-orb2"></div>
+    <div class="maint-content">
+      <div class="maint-logo">💎</div>
+      <div class="maint-brand">Nova Accessories</div>
+      <h1 class="maint-title" id="maintTitle">نعود قريباً ✨</h1>
+      <p class="maint-sub" id="maintSub">نحن نقوم ببعض التحسينات. شكراً لصبرك!</p>
+      <div class="maint-backby" id="maintBackByDisplay" style="display:none;">
+        <span data-i18n="maint.backby">نعود في:</span>
+        <strong id="maintBackByTime"></strong>
+      </div>
+      <div class="maint-socials">
+        <a href="#" class="social-btn">📸</a>
+        <a href="#" class="social-btn">🎵</a>
+        <a href="#" class="social-btn">📌</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Ctrl+A Pin Pad ────────────────────────────────────────────── -->
+  <div class="pin-overlay" id="pinOverlay" style="display:none;">
+    <div class="pin-card">
+      <div class="pin-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span data-i18n="maint.pin.title">وضع الصيانة</span>
+      </div>
+      <div class="pin-field-wrap">
+        <input id="pinInput" type="password" class="pin-field"
+               data-i18n-placeholder="maint.pin.placeholder" placeholder="كلمة المرور">
+      </div>
+      <div class="pin-msg" id="pinMsg"></div>
+      <div class="pin-actions">
+        <button class="btn btn-outline" id="pinCancel" data-i18n="adm.cancel">إلغاء</button>
+        <button class="btn btn-primary" id="pinSubmit" data-i18n="maint.pin.btn">تفعيل / إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Promo Popup ────────────────────────────────────────────────── -->
+  <div class="promo-overlay" id="promoOverlay" style="display:none;">
+    <div class="promo-popup">
+      <button class="promo-close" id="promoClose">✕</button>
+      <div class="promo-confetti" id="promoConfetti"></div>
+      <div class="promo-emoji">🎉</div>
+      <h2 class="promo-title" data-i18n="promo.title">مرحباً بك في نوفا!</h2>
+      <p class="promo-desc"  data-i18n="promo.desc">احصل على خصم 10% على أول طلب</p>
+      <div class="promo-code-box" id="promoCodeBox">
+        <span class="promo-code-text" id="promoCodeText">NOVA10</span>
+        <button class="promo-copy-btn" id="promoCopy">
+          <span data-i18n="promo.copy">نسخ الكود</span>
+        </button>
+      </div>
+      <p class="promo-valid" data-i18n="promo.valid">صالح لطلبك الأول فقط</p>
+      <button class="promo-skip" id="promoSkip" data-i18n="promo.skip">لا شكراً</button>
+    </div>
+  </div>
+
+  <!-- ── FOMO Social Proof ─────────────────────────────────────────── -->
+  <div class="fomo-popup" id="fomoPopup" style="display:none;">
+    <div class="fomo-avatar">👤</div>
+    <div class="fomo-body">
+      <div class="fomo-text" id="fomoText">رانيا من الرياض اشترت للتو</div>
+      <div class="fomo-time" data-i18n="fomo.time">منذ قليل</div>
+    </div>
+    <button class="fomo-dismiss" id="fomoDismiss">✕</button>
+  </div>
+
+  <!-- ── Back to Top ───────────────────────────────────────────────── -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top" style="opacity:0;pointer-events:none;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
+
+  <!-- ── Mobile Bottom Nav ─────────────────────────────────────────── -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile navigation">
+    <a href="#home" class="mbn-item active">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span data-i18n="nav.home">الرئيسية</span>
+    </a>
+    <button class="mbn-item" id="mbnSearchBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <span data-i18n="nav.search">بحث</span>
+    </button>
+    <a href="wishlist.html" class="mbn-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span data-i18n="nav.wishlist">المفضلة</span>
+    </a>
+    <button class="mbn-item" id="mbnCartBtn">
+      <span class="mbn-cart-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="mbn-badge" id="mbnCartCount" style="display:none">0</span>
+      </span>
+      <span data-i18n="nav.cart">السلة</span>
+    </button>
+  </nav>
 
   <!-- ── Cart Drawer ─────────────────────────────────────────────────── -->
   <div class="cart-overlay" id="cartOverlay"></div>

@@ -250,3 +250,136 @@
 @media (max-width: 480px) {
   [dir="rtl"] .toast-container { left: 16px; right: auto; }
 }
+
+/* ── NEW FEATURES — RTL Overrides ──────────────────────────────────────────
+   All components added in the Phase 1–4 feature upgrade.
+────────────────────────────────────────────────────────────────────────── */
+
+/* ── Flash Sale Banner ──────────────────────────────────────────────────── */
+[dir="rtl"] .flash-banner        { direction: rtl; }
+[dir="rtl"] .flash-banner-inner  { flex-direction: row-reverse; }
+[dir="rtl"] .flash-dismiss       { margin-left: 0; margin-right: auto; }
+
+/* ── Sort / Filter Row ──────────────────────────────────────────────────── */
+[dir="rtl"] .sort-filter-row  { flex-direction: row-reverse; }
+[dir="rtl"] .active-filters   { flex-direction: row-reverse; }
+[dir="rtl"] .filter-count     { text-align: right; }
+
+/* ── Active Chips ───────────────────────────────────────────────────────── */
+[dir="rtl"] .active-chip      { flex-direction: row-reverse; }
+
+/* ── Sold-Count Badge (product cards) ──────────────────────────────────── */
+[dir="rtl"] .sold-count-badge {
+  left: auto;
+  right: 12px;
+}
+
+/* ── Product Sold-Out Overlay text ────────────────────────────────────── */
+[dir="rtl"] .product-sold-out-overlay { direction: rtl; }
+
+/* ── Enhanced Modal ─────────────────────────────────────────────────────── */
+[dir="rtl"] .modal-qty-row    { flex-direction: row-reverse; justify-content: flex-end; }
+[dir="rtl"] .stock-in,
+[dir="rtl"] .stock-out        { margin-left: 0; margin-right: 0; }
+[dir="rtl"] .modal-related    { text-align: right; }
+[dir="rtl"] .modal-related-grid { direction: rtl; }
+
+/* ── Bundle Section ─────────────────────────────────────────────────────── */
+[dir="rtl"] .bundle-card      { direction: rtl; text-align: right; }
+[dir="rtl"] .bundle-pricing   { flex-direction: row-reverse; }
+[dir="rtl"] .bundle-save-badge {
+  inset-inline-start: auto;
+  inset-inline-end: 12px;
+}
+
+/* ── Recently Viewed ────────────────────────────────────────────────────── */
+[dir="rtl"] .rv-track         { direction: rtl; }
+[dir="rtl"] .rv-card          { text-align: right; }
+
+/* ── Maintenance Overlay ────────────────────────────────────────────────── */
+[dir="rtl"] .maintenance-overlay { direction: rtl; text-align: center; }
+[dir="rtl"] .maint-content    { text-align: center; }
+
+/* ── Pin Pad Overlay (Ctrl+A) ───────────────────────────────────────────── */
+[dir="rtl"] .pin-overlay      { direction: rtl; }
+[dir="rtl"] .pin-card         { text-align: center; }
+[dir="rtl"] .pin-actions      { flex-direction: row-reverse; }
+
+/* ── Promo / Welcome Popup ──────────────────────────────────────────────── */
+[dir="rtl"] .promo-popup      { direction: rtl; text-align: center; }
+[dir="rtl"] .promo-code-box   { flex-direction: row-reverse; }
+[dir="rtl"] .promo-close      { right: auto; left: 16px; }
+
+/* ── FOMO Social Proof Popup ────────────────────────────────────────────── */
+/* In RTL the popup slides in from bottom-RIGHT instead of bottom-left */
+[dir="rtl"] .fomo-popup {
+  left: auto;
+  right: 20px;
+}
+@keyframes fomoSlideIn-rtl {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+[dir="rtl"] .fomo-popup.show {
+  animation-name: fomoSlideIn-rtl;
+}
+[dir="rtl"] .fomo-popup-inner { flex-direction: row-reverse; text-align: right; }
+
+/* ── Back-to-Top Button ─────────────────────────────────────────────────── */
+/* Mirror to bottom-left in RTL */
+[dir="rtl"] .back-to-top {
+  right: auto;
+  left: 24px;
+}
+
+/* ── Mobile Bottom Navigation ───────────────────────────────────────────── */
+[dir="rtl"] .mobile-bottom-nav { direction: rtl; flex-direction: row-reverse; }
+
+/* ── Wishlist Nav Count Badge ───────────────────────────────────────────── */
+[dir="rtl"] .wishlist-nav-count {
+  right: auto;
+  left: -4px;
+}
+
+/* ── Admin Lock Screen ──────────────────────────────────────────────────── */
+[dir="rtl"] .lock-card    { direction: rtl; text-align: center; }
+[dir="rtl"] .lock-hint    { text-align: center; }
+[dir="rtl"] .lock-eye {
+  right: auto;
+  left: 14px;
+}
+
+/* ── Admin Maintenance Badge ────────────────────────────────────────────── */
+[dir="rtl"] .maintenance-badge { direction: rtl; }
+
+/* ── Admin Promotions / Settings Grids ─────────────────────────────────── */
+[dir="rtl"] .promo-grid    { direction: rtl; }
+[dir="rtl"] .settings-grid { direction: rtl; }
+[dir="rtl"] .promo-item    { text-align: right; }
+[dir="rtl"] .activity-entry { flex-direction: row-reverse; text-align: right; }
+
+/* ── Admin Bulk Bar ─────────────────────────────────────────────────────── */
+[dir="rtl"] .bulk-bar { direction: rtl; flex-direction: row-reverse; }
+
+/* ── Scroll Progress Bar ────────────────────────────────────────────────── */
+/* Progress bar grows from right in RTL */
+[dir="rtl"] .scroll-progress {
+  left: auto;
+  right: 0;
+  transform-origin: right center;
+}
+
+/* ── Wishlist Page ──────────────────────────────────────────────────────── */
+[dir="rtl"] .wl-header        { flex-direction: row-reverse; }
+[dir="rtl"] .wl-title-wrap    { flex-direction: row-reverse; }
+[dir="rtl"] .wl-card-body     { text-align: right; }
+[dir="rtl"] .wl-card-price-row { flex-direction: row-reverse; }
+[dir="rtl"] .wl-card-actions  { flex-direction: row-reverse; }
+[dir="rtl"] .wl-card-badge    { left: auto; right: 12px; }
+[dir="rtl"] .wl-remove-btn    { right: auto; left: 12px; }
+
+/* ── Responsive RTL additions ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  [dir="rtl"] .fomo-popup { left: auto; right: 12px; }
+  [dir="rtl"] .back-to-top { right: auto; left: 16px; }
+}

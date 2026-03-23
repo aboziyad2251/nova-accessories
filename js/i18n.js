@@ -267,6 +267,111 @@ const TRANSLATIONS = {
     'adm.toast.sub.deleted' : '🗑️ تم حذف الفئة الفرعية.',
     'adm.toast.required'    : '⚠️ يرجى ملء جميع الحقول المطلوبة.',
     'adm.toast.invalid.url' : 'رابط غير صالح',
+
+    // ── Lock screen
+    'lock.title'            : 'أدخل كلمة المرور',
+    'lock.sub'              : 'للوصول إلى لوحة التحكم',
+    'lock.enter'            : 'دخول',
+    'lock.hint'             : 'كلمة المرور الافتراضية: admin123',
+
+    // ── Admin new sections
+    'adm.tools'             : 'الأدوات',
+    'adm.promotions'        : 'العروض والأكواد',
+    'adm.activity'          : 'سجل النشاط',
+    'adm.settings'          : 'الإعدادات',
+    'adm.maint.on'          : 'وضع الصيانة مفعّل',
+    'adm.maint.title'       : 'وضع الصيانة',
+    'adm.maint.toggle'      : 'تفعيل وضع الصيانة',
+    'adm.maint.msg.en'      : 'رسالة الصيانة (إنجليزي)',
+    'adm.maint.msg.ar'      : 'رسالة الصيانة (عربي)',
+    'adm.maint.backby'      : 'وقت العودة (اختياري)',
+    'adm.flashsale'         : 'فلاش سيل',
+    'adm.flashsale.active'  : 'تفعيل الفلاش سيل',
+    'adm.f.sale.end'        : 'تاريخ ووقت انتهاء العرض',
+    'adm.promocodes'        : 'أكواد الخصم',
+    'adm.f.code'            : 'الكود',
+    'adm.f.discount'        : 'الخصم %',
+    'adm.add.code'          : 'إضافة كود',
+    'adm.features'          : 'الميزات',
+    'adm.toggle.social'     : 'الإشعارات الاجتماعية (FOMO)',
+    'adm.toggle.promo'      : 'بوب آب الترحيب والخصم',
+    'adm.toggle.bundles'    : 'قسم الباقات',
+    'adm.change.pw'         : 'تغيير كلمة المرور',
+    'adm.pw.current'        : 'كلمة المرور الحالية',
+    'adm.pw.new'            : 'كلمة المرور الجديدة',
+    'adm.pw.confirm'        : 'تأكيد كلمة المرور',
+    'adm.pw.save'           : 'تحديث كلمة المرور',
+    'adm.logout'            : 'تسجيل الخروج',
+    'adm.logout.sub'        : 'إنهاء الجلسة والعودة لشاشة القفل',
+    'adm.logout.btn'        : 'تسجيل الخروج',
+    'adm.clear.log'         : 'مسح السجل',
+
+    // ── Flash sale banner
+    'flash.ends'            : '⚡ العرض ينتهي خلال:',
+    'flash.expired'         : '⚡ انتهى العرض',
+
+    // ── Maintenance overlay (on store)
+    'maint.title'           : 'نعود قريباً ✨',
+    'maint.sub'             : 'نحن نقوم ببعض التحسينات. شكراً لصبرك!',
+    'maint.backby'          : 'نعود في:',
+    'maint.pin.title'       : 'وضع الصيانة',
+    'maint.pin.placeholder' : 'كلمة المرور',
+    'maint.pin.btn'         : 'تفعيل / إلغاء',
+
+    // ── Promo popup
+    'promo.title'           : 'مرحباً بك في نوفا! 🎉',
+    'promo.desc'            : 'احصل على خصم 10% على أول طلب',
+    'promo.copy'            : 'نسخ الكود',
+    'promo.copied'          : '✅ تم النسخ!',
+    'promo.skip'            : 'لا شكراً',
+    'promo.valid'           : 'صالح لطلبك الأول فقط',
+
+    // ── FOMO social proof
+    'fomo.time'             : 'منذ قليل',
+    'fomo.bought'           : 'اشترى للتو',
+    'fomo.viewed'           : 'يشاهد الآن',
+
+    // ── Recently viewed
+    'rv.title'              : 'شاهدته مؤخراً',
+
+    // ── Bundle deals
+    'bundle.eyebrow'        : 'وفّر أكثر',
+    'bundle.title'          : 'باقات',
+    'bundle.title2'         : 'وخصومات',
+    'bundle.save'           : 'وفّر',
+    'bundle.add'            : 'أضف الباقة للسلة',
+
+    // ── Sorting
+    'sort.label'            : 'ترتيب:',
+    'sort.default'          : 'افتراضي',
+    'sort.price.asc'        : 'السعر: الأقل أولاً',
+    'sort.price.desc'       : 'السعر: الأعلى أولاً',
+    'sort.rating'           : 'الأعلى تقييماً',
+    'sort.newest'           : 'الأحدث',
+
+    // ── Filter count
+    'filter.showing'        : 'يعرض',
+    'filter.of'             : 'من',
+    'filter.items'          : 'منتج',
+
+    // ── Nav / wishlist
+    'nav.wishlist'          : 'المفضلة',
+    'nav.search'            : 'بحث',
+    'nav.cart'              : 'السلة',
+
+    // ── Wishlist Page
+    'wl.title'              : 'المفضلة',
+    'wl.clear'              : 'مسح الكل',
+    'wl.move.cart'          : 'أضف للسلة',
+    'wl.empty.title'        : 'قائمتك فارغة',
+    'wl.empty.sub'          : 'لم تضف أي منتج إلى مفضلتك بعد. تصفح مجموعتنا واضغط على القلب!',
+    'wl.empty.cta'          : 'تصفح المنتجات',
+    'wl.out.stock'          : 'غير متوفر',
+    'wl.toast.added'        : 'تمت إضافته إلى السلة',
+    'wl.toast.removed'      : 'تمت إزالته من المفضلة',
+    'wl.toast.cleared'      : 'تم مسح المفضلة',
+    'wl.confirm.clear'      : 'هل تريد مسح جميع المفضلات؟',
+    'footer.rights'         : 'جميع الحقوق محفوظة',
   },
 
   /* ═══════════════════════════════════════════════════ ENGLISH ═══ */
@@ -524,6 +629,111 @@ const TRANSLATIONS = {
     'adm.toast.sub.deleted' : '🗑️ Subcategory deleted.',
     'adm.toast.required'    : '⚠️ Please fill in all required fields.',
     'adm.toast.invalid.url' : 'Invalid URL',
+
+    // ── Lock screen
+    'lock.title'            : 'Enter Password',
+    'lock.sub'              : 'To access the admin panel',
+    'lock.enter'            : 'Enter',
+    'lock.hint'             : 'Default password: admin123',
+
+    // ── Admin new sections
+    'adm.tools'             : 'Tools',
+    'adm.promotions'        : 'Promotions & Codes',
+    'adm.activity'          : 'Activity Log',
+    'adm.settings'          : 'Settings',
+    'adm.maint.on'          : 'Maintenance Mode ON',
+    'adm.maint.title'       : 'Maintenance Mode',
+    'adm.maint.toggle'      : 'Enable Maintenance Mode',
+    'adm.maint.msg.en'      : 'Maintenance Message (English)',
+    'adm.maint.msg.ar'      : 'Maintenance Message (Arabic)',
+    'adm.maint.backby'      : 'Back by (optional)',
+    'adm.flashsale'         : 'Flash Sale',
+    'adm.flashsale.active'  : 'Enable Flash Sale',
+    'adm.f.sale.end'        : 'Sale End Date & Time',
+    'adm.promocodes'        : 'Promo Codes',
+    'adm.f.code'            : 'Code',
+    'adm.f.discount'        : 'Discount %',
+    'adm.add.code'          : 'Add Code',
+    'adm.features'          : 'Features',
+    'adm.toggle.social'     : 'Social Proof Notifications (FOMO)',
+    'adm.toggle.promo'      : 'Welcome Discount Popup',
+    'adm.toggle.bundles'    : 'Bundle Deals Section',
+    'adm.change.pw'         : 'Change Password',
+    'adm.pw.current'        : 'Current Password',
+    'adm.pw.new'            : 'New Password',
+    'adm.pw.confirm'        : 'Confirm Password',
+    'adm.pw.save'           : 'Update Password',
+    'adm.logout'            : 'Sign Out',
+    'adm.logout.sub'        : 'End session and return to lock screen',
+    'adm.logout.btn'        : 'Sign Out',
+    'adm.clear.log'         : 'Clear Log',
+
+    // ── Flash sale banner
+    'flash.ends'            : '⚡ Sale ends in:',
+    'flash.expired'         : '⚡ Sale ended',
+
+    // ── Maintenance overlay (on store)
+    'maint.title'           : 'We\'ll be back soon ✨',
+    'maint.sub'             : 'We\'re making some improvements. Thank you for your patience!',
+    'maint.backby'          : 'Back by:',
+    'maint.pin.title'       : 'Maintenance Mode',
+    'maint.pin.placeholder' : 'Password',
+    'maint.pin.btn'         : 'Toggle Maintenance',
+
+    // ── Promo popup
+    'promo.title'           : 'Welcome to Nova! 🎉',
+    'promo.desc'            : 'Get 10% off your first order',
+    'promo.copy'            : 'Copy Code',
+    'promo.copied'          : '✅ Copied!',
+    'promo.skip'            : 'No thanks',
+    'promo.valid'           : 'Valid for your first order only',
+
+    // ── FOMO social proof
+    'fomo.time'             : 'just now',
+    'fomo.bought'           : 'just bought',
+    'fomo.viewed'           : 'is viewing',
+
+    // ── Recently viewed
+    'rv.title'              : 'Recently Viewed',
+
+    // ── Bundle deals
+    'bundle.eyebrow'        : 'Save More',
+    'bundle.title'          : 'Bundle',
+    'bundle.title2'         : '& Save',
+    'bundle.save'           : 'Save',
+    'bundle.add'            : 'Add Bundle to Cart',
+
+    // ── Sorting
+    'sort.label'            : 'Sort:',
+    'sort.default'          : 'Default',
+    'sort.price.asc'        : 'Price: Low to High',
+    'sort.price.desc'       : 'Price: High to Low',
+    'sort.rating'           : 'Top Rated',
+    'sort.newest'           : 'Newest',
+
+    // ── Filter count
+    'filter.showing'        : 'Showing',
+    'filter.of'             : 'of',
+    'filter.items'          : 'products',
+
+    // ── Nav / wishlist
+    'nav.wishlist'          : 'Wishlist',
+    'nav.search'            : 'Search',
+    'nav.cart'              : 'Cart',
+
+    // ── Wishlist Page
+    'wl.title'              : 'Wishlist',
+    'wl.clear'              : 'Clear All',
+    'wl.move.cart'          : 'Add to Cart',
+    'wl.empty.title'        : 'Your wishlist is empty',
+    'wl.empty.sub'          : "You haven't saved any items yet. Browse our collection and tap the heart!",
+    'wl.empty.cta'          : 'Browse Products',
+    'wl.out.stock'          : 'Out of Stock',
+    'wl.toast.added'        : 'Added to cart',
+    'wl.toast.removed'      : 'Removed from wishlist',
+    'wl.toast.cleared'      : 'Wishlist cleared',
+    'wl.confirm.clear'      : 'Clear all wishlist items?',
+    'footer.rights'         : 'All rights reserved',
   },
 };
 

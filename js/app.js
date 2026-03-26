@@ -778,9 +778,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function initMaintenanceMode() {
     applyMaintenanceState();
 
-    // Ctrl+A to open pin pad
+    // Ctrl+Q to open pin pad
     document.addEventListener('keydown', e => {
-      if (e.ctrlKey && e.key.toLowerCase() === 'a' && !e.target.matches('input,textarea,select')) {
+      if (e.ctrlKey && e.key.toLowerCase() === 'q') {
         e.preventDefault();
         openPinPad();
       }

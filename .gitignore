@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Environment & secrets
+.env
+.env*
+*.env
+
+# Deploy artifacts
+nova-deploy.tar.gz
+
+# Deploy script (contains credentials)
+deploy.mjs
+
+# OS
+.DS_Store
+Thumbs.db
+.env
+node_modules/
